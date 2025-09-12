@@ -5,15 +5,16 @@ use log::{
 use gtk::{
     prelude::*,
     glib,
-    glib::{
-        clone
-    },
+    glib::clone,
     subclass::prelude::*,
     gio,
     gio::prelude::*
 };
 
-use crate::ui::windows::about_window::AboutWindow;
+use crate::ui::windows::{
+    about_window::AboutWindow,
+    preferences::PreferencesWindow
+};
 
 
 #[derive(Debug, Default, gtk::CompositeTemplate)]
@@ -23,6 +24,42 @@ pub struct MainWindow {
     pub headerbar: TemplateChild<gtk::HeaderBar>,
     #[template_child]
     pub menubar: TemplateChild<gtk::PopoverMenuBar>,
+}
+
+
+impl MainWindow {
+
+    fn add_actions(&self) {
+        let obj = self.obj().clone();
+
+        let preferences_action = gio::SimpleAction::new("preferences", None);
+        preferences_action.connect_activate(clone!(
+            #[weak] obj,
+             move |_, _| {
+                let app = obj.application().unwrap();
+
+                let pref_window = PreferencesWindow::new(&app);
+                pref_window.set_transient_for(Some(&obj));
+                pref_window.present();
+            }
+        ));
+        self.obj().add_action(&preferences_action);
+
+        // let about_action = gio::SimpleAction::new("about", None);
+        // about_action.connect_activate(clone!(
+        //     #[weak] 
+        //     obj,
+        //     move |_, _| {
+        //         let app = obj.application().unwrap();
+
+        //         let about_window = AboutWindow::new(&app);
+        //         about_window.set_transient_for(Some(&obj));
+        //         about_window.present();
+        //     }
+        // ));
+        let about_action = crate::ui::actions::about::about_action(&obj)    ;
+        self.obj().add_action(&about_action);
+    }
 }
 
 #[glib::object_subclass]
@@ -45,19 +82,7 @@ impl ObjectImpl for MainWindow {
     fn constructed(&self) {
         self.parent_constructed();
 
-        let obj = self.obj().clone();
-
-        let preferences_action = gio::SimpleAction::new("preferences", None);
-        preferences_action.connect_activate(move |_, _| {
-            debug!("show preferences");
-
-            let app = obj.application().unwrap();
-
-            let about_window = AboutWindow::new(&app);
-            about_window.set_transient_for(Some(&obj));
-            about_window.present();
-        });
-        self.obj().add_action(&preferences_action);
+        self.add_actions();
     }
 }
 
