@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <template class="AboutWindow" parent="GtkWindow">
+        <property name="default-width">400</property>
+        <property name="default-height">300</property>
+        <property name="resizable">false</property>
+        <!-- <property name="type-hint">dialog</property> -->
+        <property name="modal">true</property>
+        <property name="title">Oxide</property>
+
+        <child>
+            <object class="GtkBox">
+                <property name="orientation">vertical</property>
+
+                <child>
+                    <object class="GtkLabel">
+                        <property name="label" translatable="yes">About Oxide</property>
+                        <property name="halign">center</property>
+                        <property name="margin-top">20</property>
+                        <property name="margin-bottom">10</property>
+                        <property name="margin-start">10</property>
+                        <property name="margin-end">10</property>
+                        <attributes>
+                            <attribute name="scale" value="2.0"/>
+                            <attribute name="weight" value="bold"/>
+                        </attributes>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </template>
+</interface>

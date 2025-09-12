@@ -2,5 +2,6 @@
 <gresources>
     <gresource prefix="/org/devphilplus/oxide/">
         <file compressed="true" preprocess="xml-stripblanks">main_window.ui</file>
+        <file compressed="true" preprocess="xml-stripblanks">about_window.ui</file>
     </gresource>
 </gresources>

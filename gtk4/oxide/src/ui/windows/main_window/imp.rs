@@ -3,11 +3,17 @@ use log::{
 };
 
 use gtk::{
+    prelude::*,
     glib,
+    glib::{
+        clone
+    },
     subclass::prelude::*,
     gio,
     gio::prelude::*
 };
+
+use crate::ui::windows::about_window::AboutWindow;
 
 
 #[derive(Debug, Default, gtk::CompositeTemplate)]
@@ -39,13 +45,19 @@ impl ObjectImpl for MainWindow {
     fn constructed(&self) {
         self.parent_constructed();
 
-        let obj = self.obj();
+        let obj = self.obj().clone();
 
         let preferences_action = gio::SimpleAction::new("preferences", None);
-        preferences_action.connect_activate(|_,_| {
+        preferences_action.connect_activate(move |_, _| {
             debug!("show preferences");
+
+            let app = obj.application().unwrap();
+
+            let about_window = AboutWindow::new(&app);
+            about_window.set_transient_for(Some(&obj));
+            about_window.present();
         });
-        obj.add_action(&preferences_action);
+        self.obj().add_action(&preferences_action);
     }
 }
 
