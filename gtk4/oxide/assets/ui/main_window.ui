@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <menu id="main-menu">
+    <item>
+      <attribute name="label" translatable="yes">_Close window</attribute>
+      <attribute name="action">window.close</attribute>
+    </item>
+    <item>
+      <attribute name="label" translatable="yes">_Toggle button frame</attribute>
+      <attribute name="action">win.button-frame</attribute>
+    </item>
+    <section>
+      <attribute name="label" translatable="yes">Orientation</attribute>
+      <item>
+        <attribute name="label" translatable="yes">_Horizontal</attribute>
+        <attribute name="action">win.orientation</attribute>
+        <attribute name="target">Horizontal</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Vertical</attribute>
+        <attribute name="action">win.orientation</attribute>
+        <attribute name="target">Vertical</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">E_xit</attribute>
+        <attribute name="action">app.close</attribute>
+      </item>
+    </section>
+  </menu>
+
+    <menu id="menu_main">
+        <submenu>
+            <attribute name="label" translatable="yes">_File</attribute>
+            <section>
+                <item>
+                    <attribute name="label" translatable="yes">New</attribute>
+                    <attribute name="action">app.new</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">Open</attribute>
+                    <attribute name="action">app.open</attribute>
+                </item>
+            </section>
+            <section>
+                <item>
+                    <attribute name="label" translatable="yes">Exit</attribute>
+                    <attribute name="action">app.exit</attribute>
+                </item>
+            </section>
+        </submenu>
+        <submenu>
+            <attribute name="label" translatable="yes">_Edit</attribute>
+            <section>
+                <item>
+                    <attribute name="label" translatable="yes">Undo</attribute>
+                    <attribute name="action">app.undo</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">Redo</attribute>
+                    <attribute name="action">app.redo</attribute>
+                </item>
+            </section>
+            <section>
+                <item>
+                    <attribute name="label" translatable="yes">Cut</attribute>
+                    <attribute name="action">app.cut</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">Copy</attribute>
+                    <attribute name="action">app.copy</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">Paste</attribute>
+                    <attribute name="action">app.paste</attribute>
+                </item>
+            </section>
+            <section>
+                <item>
+                    <attribute name="label" translatable="yes">Preferences ...</attribute>
+                    <attribute name="action">app.preferences</attribute>
+                </item>
+            </section>
+        </submenu>
+        <submenu>
+            <attribute name="label" translatable="yes">_Help</attribute>
+            <section>
+                <item>
+                    <attribute name="label" translatable="yes">About</attribute>
+                    <attribute name="action">app.about</attribute>
+                </item>
+            </section>
+        </submenu>
+    </menu>
+
+    <template class="MainWindow" parent="GtkApplicationWindow">
+        <property name="default-width">600</property>
+        <property name="default-height">300</property>
+        <property name="title">Oxide</property>
+
+        <child type="titlebar">
+            <object class="GtkHeaderBar" id="headerbar">
+                <property name="show-title-buttons">True</property>
+
+                <child type="start">
+                    <object class="GtkMenuButton" id="menubutton">
+                        <property name="halign">center</property>
+                        <property name="icon-name">open-menu-symbolic</property>
+                        <property name="menu-model">main-menu</property>
+                        <property name="tooltip-text" translatable="yes">Main Menu</property>
+                    </object>
+                </child>
+                
+                <child type="end">
+                    <object class="GtkMenuButton" id="settings">
+                        <property name="halign">center</property>
+                        <property name="icon-name">settings</property>
+                    </object>
+                </child>
+            </object>
+        </child>
+
+        <child>
+            <object class="GtkBox">
+                <property name="orientation">vertical</property>
+
+                <child>
+                    <object class="GtkPopoverMenuBar" id="menubar">
+                        <property name="menu-model">menu_main</property>
+                    </object>
+                </child>
+
+                <child>
+                    <object class="GtkPaned">
+                        <property name="orientation">horizontal</property>
+                        <property name="hexpand">true</property>
+                        <property name="vexpand">true</property>
+
+                        <child>
+                            <object class="GtkFrame">
+                                <property name="label">frame 1</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkFrame">
+                                <property name="label">frame 2</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                
+                <child>
+                    <object class="GtkActionBar" id="status_bar">
+                        <child type="start">
+                            <object class="GtkLabel">
+                                <property name="label" translatable="yes">start</property>
+                            </object>
+                        </child>
+                        <child type="center">
+                            <object class="GtkLabel">
+                                <property name="label" translatable="yes">center</property>
+                            </object>
+                        </child>
+                        <child type="end">
+                            <object class="GtkLabel">
+                                <property name="label" translatable="yes">end</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </template>
+</interface>

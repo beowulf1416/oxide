@@ -1,0 +1,15 @@
+[package]
+name = "oxide"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+log="*"
+env_logger="*"
+
+gtk = { version="*", package="gtk4" }
+
+
+[build-dependencies]
+glib-build-tools = "*"
