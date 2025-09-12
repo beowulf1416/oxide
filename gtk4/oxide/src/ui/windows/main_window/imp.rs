@@ -1,8 +1,12 @@
+use log::{
+    debug
+};
+
 use gtk::{
-    Window,
     glib,
     subclass::prelude::*,
-    gio::SimpleActionGroup
+    gio,
+    gio::prelude::*
 };
 
 
@@ -34,6 +38,14 @@ impl ObjectSubclass for MainWindow {
 impl ObjectImpl for MainWindow {
     fn constructed(&self) {
         self.parent_constructed();
+
+        let obj = self.obj();
+
+        let preferences_action = gio::SimpleAction::new("preferences", None);
+        preferences_action.connect_activate(|_,_| {
+            debug!("show preferences");
+        });
+        obj.add_action(&preferences_action);
     }
 }
 

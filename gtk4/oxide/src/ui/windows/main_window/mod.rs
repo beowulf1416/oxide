@@ -5,7 +5,6 @@ use gtk::{
     gio, 
     glib, 
     prelude::*, 
-    subclass::prelude::*,
 };
 
 

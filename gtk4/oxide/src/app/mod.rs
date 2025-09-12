@@ -2,7 +2,6 @@ pub mod imp;
 
 
 use gtk::{
-    prelude::*,
     gio, 
     glib
 };

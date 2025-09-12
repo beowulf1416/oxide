@@ -79,7 +79,7 @@
             <section>
                 <item>
                     <attribute name="label" translatable="yes">Preferences ...</attribute>
-                    <attribute name="action">app.preferences</attribute>
+                    <attribute name="action">win.preferences</attribute>
                 </item>
             </section>
         </submenu>
