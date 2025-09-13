@@ -11,22 +11,22 @@ use gtk::{
 
 
 use crate::ui::windows::main_window::MainWindow;
-use crate::ui::windows::about_window::AboutWindow;
+use crate::ui::windows::preferences::PreferencesWindow;
 
 
-pub fn about_action(
+pub fn preferences_action(
     window: &MainWindow
 ) -> gio::SimpleAction {
-    let action = gio::SimpleAction::new("about", None);
+    let action = gio::SimpleAction::new("preferences", None);
     action.connect_activate(clone!(
         #[weak]
         window,
         move |_, _| {
             let app = window.application().unwrap();
 
-            let about_window = AboutWindow::new(&app);
-            about_window.set_transient_for(Some(&window));
-            about_window.present();
+            let pref_window = PreferencesWindow::new(&app);
+            pref_window.set_transient_for(Some(&window));
+            pref_window.present();
         }
     ));
     return action;
