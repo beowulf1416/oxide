@@ -11,11 +11,6 @@ use gtk::{
     gio::prelude::*
 };
 
-use crate::ui::windows::{
-    about_window::AboutWindow,
-    preferences::PreferencesWindow
-};
-
 
 #[derive(Debug, Default, gtk::CompositeTemplate)]
 #[template(resource = "/org/devphilplus/oxide/main_window.ui")]
@@ -37,6 +32,9 @@ impl MainWindow {
 
         let about_action = crate::ui::actions::about::about_action(&obj);
         self.obj().add_action(&about_action);
+
+        let file_open_action = crate::ui::actions::file_open::file_open_action(&obj);
+        self.obj().add_action(&file_open_action);
     }
 }
 

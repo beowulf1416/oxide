@@ -8,7 +8,8 @@ edition = "2024"
 log="*"
 env_logger="*"
 
-gtk = { version="*", package="gtk4" }
+gtk = { version="*", package="gtk4", features=["v4_14"] }
+rfd = "*"
 
 
 [build-dependencies]

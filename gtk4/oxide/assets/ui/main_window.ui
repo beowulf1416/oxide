@@ -40,7 +40,7 @@
                 </item>
                 <item>
                     <attribute name="label" translatable="yes">Open</attribute>
-                    <attribute name="action">app.open</attribute>
+                    <attribute name="action">win.file.open</attribute>
                 </item>
             </section>
             <section>
