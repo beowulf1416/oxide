@@ -25,8 +25,11 @@ pub fn file_open_action(
         move |_, _| {
             debug!("File Open action activated");
 
+            // let gtk_window = window.downcast_ref::<gtk::Window>().unwrap();
+            // let handle = gtk_window.native().unwrap();
+
             match FileDialog::new()
-                // .set_parent(&window)
+                // .set_parent(handle)
                 .set_title("Select a folder")
                 .pick_folder() {
                     Some(folder) => {

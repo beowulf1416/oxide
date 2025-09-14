@@ -19,6 +19,8 @@ pub struct MainWindow {
     pub headerbar: TemplateChild<gtk::HeaderBar>,
     #[template_child]
     pub menubar: TemplateChild<gtk::PopoverMenuBar>,
+    #[template_child]
+    pub files: TemplateChild<gtk::TreeView>,
 }
 
 
