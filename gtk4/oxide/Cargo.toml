@@ -9,8 +9,10 @@ log="*"
 env_logger="*"
 
 gtk = { version="*", package="gtk4", features=["v4_14"] }
+glib-macros = "*"
 rfd = "*"
 
+once_cell = "*"
 
 [build-dependencies]
 glib-build-tools = "*"

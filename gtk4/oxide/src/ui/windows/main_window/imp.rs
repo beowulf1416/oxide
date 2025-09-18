@@ -2,25 +2,40 @@ use log::{
     debug
 };
 
+use std::cell::Ref;
+
 use gtk::{
     prelude::*,
-    glib,
-    glib::clone,
+    glib::{
+        self,
+        clone,
+        BoxedAnyObject
+    },
     subclass::prelude::*,
     gio,
     gio::prelude::*
 };
 
 
+// use crate::ui::windows::main_window::views::file_item::FileItem;
+// use crate::ui::windows::main_window::item::FileItem;
+use crate::ui::windows::main_window::directory_item::DirectoryItem;
+use crate::ui::windows::main_window::cell::{
+    Cell,
+    Entry
+};
+
+
+
 #[derive(Debug, Default, gtk::CompositeTemplate)]
 #[template(resource = "/org/devphilplus/oxide/main_window.ui")]
-pub struct MainWindow {
+pub struct MainWindow { 
     #[template_child]
     pub headerbar: TemplateChild<gtk::HeaderBar>,
     #[template_child]
     pub menubar: TemplateChild<gtk::PopoverMenuBar>,
     #[template_child]
-    pub files: TemplateChild<gtk::TreeView>,
+    pub files: TemplateChild<gtk::ColumnView>,
 }
 
 
@@ -37,6 +52,46 @@ impl MainWindow {
 
         let file_open_action = crate::ui::actions::file_open::file_open_action(&obj);
         self.obj().add_action(&file_open_action);
+    }
+
+    fn setup_columnview(&self) {
+        let store = gio::ListStore::new::<BoxedAnyObject>();
+
+        (0..100).for_each(|i| {
+            store.append(&BoxedAnyObject::new(DirectoryItem::new(
+                format!("File {i}").as_str(), 
+                format!("Type {i}").as_str()
+            )));
+        });
+        
+        let sm = gtk::SingleSelection::new(Some(store.upcast::<gio::ListModel>()));
+        self.files.set_model(Some(&sm));
+
+        let name_factory = gtk::SignalListItemFactory::new();
+        name_factory.connect_setup(move |_factory, list_item| {
+            let item = list_item.downcast_ref::<gtk::ListItem>().unwrap();
+
+            let r = Cell::default();
+            item.set_child(Some(&r));
+        });
+
+        name_factory.connect_bind(move |_factory, list_item| {
+            let item = list_item.downcast_ref::<gtk::ListItem>().unwrap();
+
+            let child = item.child().and_downcast::<Cell>().unwrap();
+            let entry = item.item().and_downcast::<BoxedAnyObject>().unwrap();
+
+            let r: Ref<DirectoryItem> = entry.borrow();
+            let e = Entry {
+                value: r.name()
+            };
+
+            child.set_value(&e);
+        });
+
+        let name_column = gtk::ColumnViewColumn::new(Some("Name"), Some(name_factory));
+
+        self.files.append_column(&name_column);
     }
 }
 
@@ -61,6 +116,7 @@ impl ObjectImpl for MainWindow {
         self.parent_constructed();
 
         self.add_actions();
+        self.setup_columnview();
     }
 }
 

@@ -1181,8 +1181,10 @@ version = "0.1.0"
 dependencies = [
  "env_logger",
  "glib-build-tools",
+ "glib-macros",
  "gtk4",
  "log",
+ "once_cell",
  "rfd",
 ]
 

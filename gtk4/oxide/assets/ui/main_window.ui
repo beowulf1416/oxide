@@ -142,7 +142,7 @@
                                 <property name="label">frame 1</property>
 
                                 <child>
-                                    <object class="GtkTreeView" id="files">
+                                    <object class="GtkColumnView" id="files">
                                         <property name="hexpand">true</property>
                                         <property name="vexpand">true</property>
                                     </object>
