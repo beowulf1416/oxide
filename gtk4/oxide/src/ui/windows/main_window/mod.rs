@@ -1,6 +1,4 @@
 pub mod imp;
-// pub mod views;
-// pub mod item;
 pub mod directory_item;
 pub mod cell;
 

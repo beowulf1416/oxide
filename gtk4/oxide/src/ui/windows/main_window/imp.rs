@@ -17,8 +17,6 @@ use gtk::{
 };
 
 
-// use crate::ui::windows::main_window::views::file_item::FileItem;
-// use crate::ui::windows::main_window::item::FileItem;
 use crate::ui::windows::main_window::directory_item::DirectoryItem;
 use crate::ui::windows::main_window::cell::{
     Cell,
@@ -67,6 +65,7 @@ impl MainWindow {
         let sm = gtk::SingleSelection::new(Some(store.upcast::<gio::ListModel>()));
         self.files.set_model(Some(&sm));
 
+        /* name */
         let name_factory = gtk::SignalListItemFactory::new();
         name_factory.connect_setup(move |_factory, list_item| {
             let item = list_item.downcast_ref::<gtk::ListItem>().unwrap();
@@ -90,8 +89,35 @@ impl MainWindow {
         });
 
         let name_column = gtk::ColumnViewColumn::new(Some("Name"), Some(name_factory));
-
         self.files.append_column(&name_column);
+        /* name */
+
+        /* type */
+        let type_factory = gtk::SignalListItemFactory::new();
+        type_factory.connect_setup(move |_factory, list_item| {
+            let item = list_item.downcast_ref::<gtk::ListItem>().unwrap();
+
+            let r = Cell::default();
+            item.set_child(Some(&r));
+        });
+
+        type_factory.connect_bind(move |_factory, list_item| {
+            let item = list_item.downcast_ref::<gtk::ListItem>().unwrap();
+
+            let child = item.child().and_downcast::<Cell>().unwrap();
+            let entry = item.item().and_downcast::<BoxedAnyObject>().unwrap();
+
+            let r: Ref<DirectoryItem> = entry.borrow();
+            let e = Entry {
+                value: r.item_type()
+            };
+
+            child.set_value(&e);
+        });
+
+        let type_column = gtk::ColumnViewColumn::new(Some("Name"), Some(type_factory));
+        self.files.append_column(&type_column);
+        /* type */
     }
 }
 
