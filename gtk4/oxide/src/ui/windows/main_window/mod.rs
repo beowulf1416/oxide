@@ -1,5 +1,6 @@
 pub mod imp;
 pub mod directory_item;
+pub mod node;
 pub mod cell;
 
 use gtk::{
