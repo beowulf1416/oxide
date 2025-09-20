@@ -192,7 +192,7 @@ impl MainWindow {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
             let row: gtk::TreeListRow = item.property("item");
 
-            debug!("row: {:?}", row);
+            // debug!("row: {:?}", row);
 
             if let Some(inner) = row.item() {
                 // debug!("inner: {:?}", inner.downcast_ref::<BoxedAnyObject>());

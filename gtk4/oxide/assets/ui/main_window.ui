@@ -132,14 +132,56 @@
                 </child>
 
                 <child>
+                    <object class="GtkActionBar">
+                        <child type="start">
+                            <object class="GtkButton">
+                                <property name="label" translatable="yes">start</property>
+                                <property name="icon-name">document-save</property>
+                            </object>
+                        </child>
+                        <child type="start">
+                            <object class="GtkButton">
+                                <property name="label" translatable="yes">start</property>
+                                <property name="icon-name">document-save-as</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+
+                <child>
                     <object class="GtkPaned">
                         <property name="orientation">horizontal</property>
                         <property name="hexpand">true</property>
                         <property name="vexpand">true</property>
 
                         <child>
-                            <object class="GtkFrame">
-                                <property name="label">frame 1</property>
+                            <object class="GtkBox">
+                                <property name="orientation">vertical</property>
+
+                                <child>
+                                    <object class="GtkInscription">
+                                        <property name="text" translatable="yes">Workspace</property>
+                                    </object>
+                                </child>
+
+                                <child>
+                                    <object class="GtkActionBar">
+
+                                        <child>
+                                            <object class="GtkButton">
+                                                <property name="label" translatable="yes">Open Workspace</property>
+                                                <property name="tooltip-text">Open workspace</property>
+                                                <property name="icon-name">folder</property>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkButton">
+                                                <property name="label" translatable="yes">Choose Workspace</property>
+                                                <property name="icon-name">folder-new</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
 
                                 <child>
                                     <object class="GtkScrolledWindow">
