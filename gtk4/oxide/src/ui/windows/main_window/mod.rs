@@ -3,10 +3,17 @@ pub mod directory_item;
 pub mod node;
 pub mod cell;
 
+
+use log::{
+    debug,
+    error
+};
+
 use gtk::{
     gio, 
     glib, 
     prelude::*, 
+    subclass::prelude::*,
 };
 
 
@@ -23,5 +30,11 @@ impl MainWindow {
     pub fn new<P: IsA<gtk::Application>>(application: &P) -> Self {
         glib::Object::builder().property("application", application)
             .build()
+    }
+
+    pub fn open_workspace(&self, path: &str) {
+        debug!("Opening workspace at path: {}", path);
+        let imp = self.imp();
+        imp.load_workspace(&path);
     }
 }

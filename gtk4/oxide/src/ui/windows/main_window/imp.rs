@@ -38,6 +38,9 @@ pub struct MainWindow {
     pub menubar: TemplateChild<gtk::PopoverMenuBar>,
     #[template_child]
     pub files: TemplateChild<gtk::ColumnView>,
+
+    #[template_child]
+    pub open_workspace_button: TemplateChild<gtk::Button>,
 }
 
 
@@ -54,75 +57,85 @@ impl MainWindow {
 
         let file_open_action = crate::ui::actions::file_open::file_open_action(&obj);
         self.obj().add_action(&file_open_action);
+
+        let open_workspace_action = crate::ui::actions::open_workspace::open_workspace_action(&obj);
+        self.obj().add_action(&open_workspace_action);
     }
 
-    fn setup_columnview(&self) {
-        let store = gio::ListStore::new::<BoxedAnyObject>();
-
-        (0..100).for_each(|i| {
-            store.append(&BoxedAnyObject::new(DirectoryItem::new(
-                format!("File {i}").as_str(), 
-                format!("Type {i}").as_str()
-            )));
+    fn setup_action_handlers(&self) {
+        self.open_workspace_button.connect_clicked(move |btn| {
+            debug!("Open Workspace button clicked");
+            btn.activate_action("win.workspace.open", None);
         });
+    }
+
+    // fn setup_columnview(&self) {
+    //     let store = gio::ListStore::new::<BoxedAnyObject>();
+
+    //     (0..100).for_each(|i| {
+    //         store.append(&BoxedAnyObject::new(DirectoryItem::new(
+    //             format!("File {i}").as_str(), 
+    //             format!("Type {i}").as_str()
+    //         )));
+    //     });
         
-        let sm = gtk::SingleSelection::new(Some(store.upcast::<gio::ListModel>()));
-        self.files.set_model(Some(&sm));
+    //     let sm = gtk::SingleSelection::new(Some(store.upcast::<gio::ListModel>()));
+    //     self.files.set_model(Some(&sm));
 
-        /* name */
-        let name_factory = gtk::SignalListItemFactory::new();
-        name_factory.connect_setup(move |_factory, list_item| {
-            let item = list_item.downcast_ref::<gtk::ListItem>().unwrap();
+    //     /* name */
+    //     let name_factory = gtk::SignalListItemFactory::new();
+    //     name_factory.connect_setup(move |_factory, list_item| {
+    //         let item = list_item.downcast_ref::<gtk::ListItem>().unwrap();
 
-            let r = Cell::default();
-            item.set_child(Some(&r));
-        });
+    //         let r = Cell::default();
+    //         item.set_child(Some(&r));
+    //     });
 
-        name_factory.connect_bind(move |_factory, list_item| {
-            let item = list_item.downcast_ref::<gtk::ListItem>().unwrap();
+    //     name_factory.connect_bind(move |_factory, list_item| {
+    //         let item = list_item.downcast_ref::<gtk::ListItem>().unwrap();
 
-            let child = item.child().and_downcast::<Cell>().unwrap();
-            let entry = item.item().and_downcast::<BoxedAnyObject>().unwrap();
+    //         let child = item.child().and_downcast::<Cell>().unwrap();
+    //         let entry = item.item().and_downcast::<BoxedAnyObject>().unwrap();
 
-            let r: Ref<DirectoryItem> = entry.borrow();
-            let e = Entry {
-                value: r.name()
-            };
+    //         let r: Ref<DirectoryItem> = entry.borrow();
+    //         let e = Entry {
+    //             value: r.name()
+    //         };
 
-            child.set_value(&e);
-        });
+    //         child.set_value(&e);
+    //     });
 
-        let name_column = gtk::ColumnViewColumn::new(Some("Name"), Some(name_factory));
-        self.files.append_column(&name_column);
-        /* name */
+    //     let name_column = gtk::ColumnViewColumn::new(Some("Name"), Some(name_factory));
+    //     self.files.append_column(&name_column);
+    //     /* name */
 
-        /* type */
-        let type_factory = gtk::SignalListItemFactory::new();
-        type_factory.connect_setup(move |_factory, list_item| {
-            let item = list_item.downcast_ref::<gtk::ListItem>().unwrap();
+    //     /* type */
+    //     let type_factory = gtk::SignalListItemFactory::new();
+    //     type_factory.connect_setup(move |_factory, list_item| {
+    //         let item = list_item.downcast_ref::<gtk::ListItem>().unwrap();
 
-            let r = Cell::default();
-            item.set_child(Some(&r));
-        });
+    //         let r = Cell::default();
+    //         item.set_child(Some(&r));
+    //     });
 
-        type_factory.connect_bind(move |_factory, list_item| {
-            let item = list_item.downcast_ref::<gtk::ListItem>().unwrap();
+    //     type_factory.connect_bind(move |_factory, list_item| {
+    //         let item = list_item.downcast_ref::<gtk::ListItem>().unwrap();
 
-            let child = item.child().and_downcast::<Cell>().unwrap();
-            let entry = item.item().and_downcast::<BoxedAnyObject>().unwrap();
+    //         let child = item.child().and_downcast::<Cell>().unwrap();
+    //         let entry = item.item().and_downcast::<BoxedAnyObject>().unwrap();
 
-            let r: Ref<DirectoryItem> = entry.borrow();
-            let e = Entry {
-                value: r.item_type()
-            };
+    //         let r: Ref<DirectoryItem> = entry.borrow();
+    //         let e = Entry {
+    //             value: r.item_type()
+    //         };
 
-            child.set_value(&e);
-        });
+    //         child.set_value(&e);
+    //     });
 
-        let type_column = gtk::ColumnViewColumn::new(Some("Name"), Some(type_factory));
-        self.files.append_column(&type_column);
-        /* type */
-    }
+    //     let type_column = gtk::ColumnViewColumn::new(Some("Name"), Some(type_factory));
+    //     self.files.append_column(&type_column);
+    //     /* type */
+    // }
 
     fn setup_treeview(&self) {
         // example tree data
@@ -224,6 +237,10 @@ impl MainWindow {
         let name_column = gtk::ColumnViewColumn::new(Some("Name"), Some(name_factory));
         self.files.append_column(&name_column);
     }
+
+    pub fn load_workspace(&self, path: &str) {
+        debug!("Loading workspace at path: {}", path);
+    }
 }
 
 #[glib::object_subclass]
@@ -247,6 +264,7 @@ impl ObjectImpl for MainWindow {
         self.parent_constructed();
 
         self.add_actions();
+        self.setup_action_handlers();
         // self.setup_columnview();
         self.setup_treeview();
     }

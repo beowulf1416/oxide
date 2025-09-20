@@ -42,6 +42,11 @@
                     <attribute name="label" translatable="yes">Open</attribute>
                     <attribute name="action">win.file.open</attribute>
                 </item>
+                <item>
+                    <attribute name="label" translatable="yes">Open Workspace</attribute>
+                    <attribute name="icon">folder</attribute>
+                    <attribute name="action">win.workspace.open</attribute>
+                </item>
             </section>
             <section>
                 <item>
@@ -168,7 +173,7 @@
                                     <object class="GtkActionBar">
 
                                         <child>
-                                            <object class="GtkButton">
+                                            <object class="GtkButton" id="open_workspace_button">
                                                 <property name="label" translatable="yes">Open Workspace</property>
                                                 <property name="tooltip-text">Open workspace</property>
                                                 <property name="icon-name">folder</property>
