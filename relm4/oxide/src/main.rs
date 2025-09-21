@@ -1,5 +1,10 @@
+mod components;
+mod actions;
+mod application_message;
 
-
+use log::{
+    debug
+};
 use serde::{Deserialize, Serialize};
 
 use gtk::{
@@ -13,14 +18,17 @@ use relm4::{
     ComponentSender,
     SimpleComponent
 };
+use relm4::actions::*;
 
+use application_message::ApplicationMessage;
+// use components::header::Header;
 
-// use app::App;
 
 
 
 struct App {
-    workspace: Workspace
+    workspace: Workspace,
+    // header: Controller<Header>,
 }
 
 
@@ -44,12 +52,13 @@ impl Workspace {
 
 relm4::new_action_group!(WindowActionGroup, "win");
 relm4::new_stateless_action!(ExampleAction, WindowActionGroup, "example");
+relm4::new_stateless_action!(CloseRequestAction, WindowActionGroup, "close-request");
 
 
 
 #[relm4::component]
 impl SimpleComponent for App {
-    type Input = ();
+    type Input = ApplicationMessage;
     type Output = ();
     type Init = ();
     // type Widgets = AppWidgets;
@@ -120,9 +129,38 @@ impl SimpleComponent for App {
         };
         let widgets = view_output!();
 
+
+        let mut group = RelmActionGroup::<WindowActionGroup>::new();
+        // let close_request_action = actions::close_request::close_request_action(&sender);
+        let close_request_action: RelmAction<CloseRequestAction> = RelmAction::new_stateless(move |_| {
+            println!("Close request action triggered");
+            // sender.output(ApplicationMessage::CloseRequest).unwrap();
+        });
+        group.add_action(close_request_action);
+
+        group.register_for_widget(&widgets.main_window);
+
+
         ComponentParts { 
             widgets, 
             model
+        }
+    }
+
+    fn update(&mut self, msg: Self::Input, _sender: ComponentSender<Self>) {
+        match msg {
+            ApplicationMessage::CloseRequest => {
+                debug!("application message close request");
+            }
+            ApplicationMessage::Close => {
+                relm4::main_application().quit();
+            }
+            ApplicationMessage::WorkspaceSave => {
+                debug!("application message workspace save");
+            }
+            ApplicationMessage::WorkspaceOpen => {
+                debug!("application message workspace open");
+            }
         }
     }
 }
