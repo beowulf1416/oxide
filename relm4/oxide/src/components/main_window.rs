@@ -16,6 +16,12 @@ use relm4::{
     SimpleComponent
 };
 use relm4::actions::*;
+use relm4_components::open_dialog::{
+    OpenDialog, OpenDialogMsg, OpenDialogResponse, OpenDialogSettings,
+};
+use relm4_components::save_dialog::{
+    SaveDialog, SaveDialogMsg, SaveDialogResponse, SaveDialogSettings,
+};
 
 
 use crate::app::App;
@@ -26,7 +32,6 @@ use crate::actions::*;
 
 
 pub struct MainWindow {
-
 }
 
 

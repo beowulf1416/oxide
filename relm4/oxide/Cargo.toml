@@ -15,6 +15,9 @@ gtk = { version="*", package="gtk4", features=["v4_14"] }
 relm4 = "0.9.1"
 relm4-components = "0.9.1"
 
+rfd = "*"
+
+
 
 [build-dependencies]
 glib-build-tools = "*"
