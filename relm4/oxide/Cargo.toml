@@ -17,6 +17,7 @@ relm4-components = "0.9.1"
 
 rfd = "*"
 
+walkdir = "*"
 
 
 [build-dependencies]

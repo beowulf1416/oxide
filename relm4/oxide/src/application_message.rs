@@ -1,7 +1,9 @@
+use crate::app::Workspace;
+
 #[derive(Debug)]
 pub enum ApplicationMessage {
     Close,
     CloseRequest,
-    WorkspaceOpen,
+    WorkspaceOpen(Workspace), /* path  */
     WorkspaceSave,
 }

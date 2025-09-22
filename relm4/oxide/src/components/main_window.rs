@@ -90,14 +90,15 @@ impl SimpleComponent for MainWindow {
                     set_valign: gtk::Align::End,
 
                     pack_start = &gtk::Button {
-                        set_label: "New",
-                        set_icon_name: "document-new"
-                    },
-
-                    pack_start = &gtk::Button {
-                        set_label: "Open",
+                        set_label: "Open Workspace",
                         set_icon_name: "document-open",
                         set_action_name: Some("win.workspace-open")
+
+                    },
+                    pack_start = &gtk::Button {
+                        set_label: "Add Folder to Workspace",
+                        set_icon_name: "plus-square-outline",
+                        set_action_name: Some("win.workspace-folder-add")
 
                     },
                 }
@@ -145,8 +146,8 @@ impl SimpleComponent for MainWindow {
             ApplicationMessage::WorkspaceSave => {
                 debug!("application message workspace save");
             }
-            ApplicationMessage::WorkspaceOpen => {
-                debug!("application message workspace open");
+            ApplicationMessage::WorkspaceOpen(path) => {
+                debug!("application message workspace open: {:?}", path);
             }
         }
     }

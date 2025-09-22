@@ -12,7 +12,9 @@ use relm4::actions::*;
 
 use rfd::FileDialog;
 
+use walkdir::WalkDir;
 
+use crate::app::Workspace;
 use crate::actions::WindowActionGroup;
 use crate::components::main_window::MainWindow;
 use crate::application_message::ApplicationMessage;
@@ -31,13 +33,18 @@ pub fn workspace_open_action(sender: Rc<ComponentSender<MainWindow>>) -> RelmAct
             .pick_folder() {
                 Some(folder) => {
                     debug!("Selected folder: {:?}", folder);
+
+                    let path = folder.to_str().unwrap();
+                    let workspace = Workspace::new(
+                        &path,
+                        vec![]
+                    );
+
+                    sender.input(ApplicationMessage::WorkspaceOpen(workspace));
                 },
                 None => {
                     debug!("No folder selected");
                 }
         }
-
-
-        sender.input(ApplicationMessage::WorkspaceOpen);
     });
 }

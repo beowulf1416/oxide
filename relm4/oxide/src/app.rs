@@ -15,7 +15,7 @@ pub struct App {
 impl App {
     pub fn new() -> Self {
         return Self {
-            workspace: Workspace::new()
+            workspace: Workspace::default()
         };
     }
 
@@ -33,17 +33,10 @@ pub struct Workspace {
 
 
 impl Workspace {
-    pub fn new() -> Self {
+    pub fn new(path: &str, nodes: Vec<RootNode>) -> Self {
         return Self { 
-            path: None,
-            nodes: vec![]
-        };
-    }
-
-    pub fn set_path(&self, path: String) -> Self {
-        return Self {
-            path: Some(path),
-            nodes: vec![]
+            path: Some(String::from(path)),
+            nodes: nodes.clone()
         };
     }
 
@@ -53,6 +46,15 @@ impl Workspace {
 
     pub fn node_push(&mut self, node: &RootNode) {
         self.nodes.push(node.clone());
+    }
+}
+
+impl Default for Workspace {
+    fn default() -> Self {
+        return Self {
+            path: None,
+            nodes: vec![]
+        };
     }
 }
 
