@@ -1,5 +1,6 @@
 mod components;
 mod actions;
+mod app;
 mod application_message;
 
 use log::{
@@ -20,150 +21,10 @@ use relm4::{
 };
 use relm4::actions::*;
 
-use application_message::ApplicationMessage;
-// use components::header::Header;
+
+use crate::components::main_window::MainWindow;
 
 
-
-
-struct App {
-    workspace: Workspace,
-    // header: Controller<Header>,
-}
-
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Workspace {
-    path: String
-}
-
-
-impl Workspace {
-    pub fn new(path: String) -> Self {
-        Self { path }
-    }
-
-    pub fn set_path(&self, path: String) -> Self {
-        return Self::new(path);
-    }
-}
-
-
-
-relm4::new_action_group!(WindowActionGroup, "win");
-relm4::new_stateless_action!(ExampleAction, WindowActionGroup, "example");
-relm4::new_stateless_action!(CloseRequestAction, WindowActionGroup, "close-request");
-
-
-
-#[relm4::component]
-impl SimpleComponent for App {
-    type Input = ApplicationMessage;
-    type Output = ();
-    type Init = ();
-    // type Widgets = AppWidgets;
-
-    menu! {
-        main_menu: {
-            "File" {
-                "New" => ExampleAction,
-                "Open" => ExampleAction,
-                section! {
-                    "Open Workspace" => ExampleAction,
-                    "Save Workspace" => ExampleAction,
-                },
-                section! {
-                    "Quit" => ExampleAction,
-                }
-            },
-            "Help" {
-                "About" => ExampleAction,
-            }
-        }
-    }
-
-    view! {
-        #[root]
-        main_window = gtk::ApplicationWindow {
-            set_title: Some("Oxide"),
-            set_default_size: (800, 600),
-            // set_child: Some(&self.widgets.main_box),
-
-            gtk::Box {
-                set_orientation: gtk::Orientation::Vertical,
-                set_spacing: 0,
-
-                gtk::PopoverMenuBar::from_model(Some(&main_menu)),
-
-                // #[name(main_box)]
-                gtk::Box {
-                    set_orientation: gtk::Orientation::Vertical,
-                    set_spacing: 0
-                },
-
-                gtk::ActionBar {
-                    set_hexpand: true,
-                    set_valign: gtk::Align::End,
-
-                    pack_start = &gtk::Button {
-                        set_label: "New",
-                        set_icon_name: "document-new"
-                    },
-
-                    pack_start = &gtk::Button {
-                        set_label: "Open",
-                        set_icon_name: "document-open"
-                    },
-                }
-            }
-        }
-    }
-
-    fn init(
-        _init: Self::Init,
-        root: Self::Root,
-        sender: ComponentSender<Self>,
-    ) -> ComponentParts<Self> {
-        let model = App {
-            workspace: Workspace::new(String::from("")),
-        };
-        let widgets = view_output!();
-
-
-        let mut group = RelmActionGroup::<WindowActionGroup>::new();
-        // let close_request_action = actions::close_request::close_request_action(&sender);
-        let close_request_action: RelmAction<CloseRequestAction> = RelmAction::new_stateless(move |_| {
-            println!("Close request action triggered");
-            // sender.output(ApplicationMessage::CloseRequest).unwrap();
-        });
-        group.add_action(close_request_action);
-
-        group.register_for_widget(&widgets.main_window);
-
-
-        ComponentParts { 
-            widgets, 
-            model
-        }
-    }
-
-    fn update(&mut self, msg: Self::Input, _sender: ComponentSender<Self>) {
-        match msg {
-            ApplicationMessage::CloseRequest => {
-                debug!("application message close request");
-            }
-            ApplicationMessage::Close => {
-                relm4::main_application().quit();
-            }
-            ApplicationMessage::WorkspaceSave => {
-                debug!("application message workspace save");
-            }
-            ApplicationMessage::WorkspaceOpen => {
-                debug!("application message workspace open");
-            }
-        }
-    }
-}
 
 
 fn main() {
@@ -175,5 +36,5 @@ fn main() {
 
     let app = RelmApp::new("org.devphilplus.oxide");
 
-    app.run::<App>(());
+    app.run::<MainWindow>(());
 }
