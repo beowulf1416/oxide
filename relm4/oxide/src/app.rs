@@ -10,23 +10,27 @@ use std::fs;
 
 
 pub struct App {
-    workspace: Workspace,
+    workspace: Rc<Workspace>,
 }
 
 
 impl App {
     pub fn new() -> Self {
         return Self {
-            workspace: Workspace::default()
+            workspace: Rc::new(Workspace::default())
         };
     }
 
-    pub fn workspace(&self) -> Workspace {
+    pub fn workspace(&self) -> Rc<Workspace> {
+        return self.workspace.clone();
+    }
+
+    pub fn workspace_mut(&mut self) -> Rc<Workspace> {
         return self.workspace.clone();
     }
 
     pub fn set_workspace(&mut self, workspace: Workspace) {
-        return self.workspace = workspace;
+        return self.workspace = Rc::new(workspace);
     }
 }
 
@@ -59,6 +63,8 @@ impl Workspace {
     }
 
     pub fn save(&self) -> Result<(), &'static str> {
+        debug!("workspace_save: {:?}", self);
+
         if let Ok(content) = serde_json::to_string(&self) {
             if let Err(e) = fs::write(format!("{}/workspace.json", self.path.clone().unwrap()), content) {
                 error!("error occured while writing workspace file: {:?}", e);
@@ -84,16 +90,26 @@ impl Default for Workspace {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Node {
     name: String,
+    path: String,
     children: Vec<Node>
 }
 
 impl Node {
 
-    pub fn new(name: &str) -> Self {
+    pub fn new(name: &str, path: &str) -> Self {
         return Self {
             name: String::from(name),
+            path: String::from(path),
             children: vec![]
         };
+    }
+
+    pub fn name(&self) -> String {
+        return self.name.clone();
+    }
+
+    pub fn path(&self) -> String {
+        return self.path.clone();
     }
 
     pub fn children(&self) -> Vec<Node> {
@@ -109,6 +125,7 @@ impl Default for Node {
     fn default() -> Self {
         return Self {
             name: String::from(""),
+            path: String::from(""),
             children: vec![] 
         };
     }
@@ -118,16 +135,27 @@ impl Default for Node {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RootNode {
     name: String,
+    path: String,
+    #[serde(skip_serializing)]
     children: Vec<Node>
 }
 
 impl RootNode {
 
-    pub fn new(name: &str) -> Self {
+    pub fn new(name: &str, path: &str) -> Self {
         return Self {
             name: String::from(name),
+            path: String::from(path),
             children: vec![]
         };
+    }
+
+    pub fn name(&self) -> String {
+        return self.name.clone();
+    }
+
+    pub fn path(&self) -> String {
+        return self.path.clone();
     }
 
     pub fn children(&self) -> Vec<Node> {

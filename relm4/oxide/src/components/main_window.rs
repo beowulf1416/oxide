@@ -1,5 +1,6 @@
 use log::{
-    debug
+    debug,
+    error
 };
 use std::rc::Rc;
 use serde::{Deserialize, Serialize};
@@ -65,8 +66,13 @@ impl SimpleComponent for MainWindow {
                 "New" => ExampleAction,
                 "Open" => ExampleAction,
                 section! {
-                    "Open Workspace" => workspace_open::WorkspaceOpenAction,
-                    "Save Workspace" => workspace_save::WorkspaceSaveAction,
+                    "Workspace" {
+                        "Open Workspace" => workspace_open::WorkspaceOpenAction,
+                        "Save Workspace" => workspace_save::WorkspaceSaveAction,
+                        section! {
+                            "Add Folder" => workspace_folder_add::WorkspaceFolderAddAction
+                        }
+                    }
                 },
                 section! {
                     "Quit" => close_request::CloseRequestAction,
@@ -135,6 +141,7 @@ impl SimpleComponent for MainWindow {
 
         let rc_sender = Rc::new(sender);
 
+        /* add actions */
         let mut group = RelmActionGroup::<WindowActionGroup>::new();
 
         let close_request_action = crate::actions::close_request::close_request_action(rc_sender.clone());
@@ -145,9 +152,14 @@ impl SimpleComponent for MainWindow {
 
         let workspace_save_action = crate::actions::workspace_save::workspace_save_action(
             rc_sender.clone(), 
-            Rc::new(model.app.workspace())
+            model.app.workspace().clone()
         );
         group.add_action(workspace_save_action);
+
+        let workspace_folder_add_action = crate::actions::workspace_folder_add::workspace_folder_add_action(
+            rc_sender.clone()
+        );
+        group.add_action(workspace_folder_add_action);
 
         group.register_for_widget(&widgets.main_window);
 
@@ -168,13 +180,24 @@ impl SimpleComponent for MainWindow {
             }
             ApplicationMessage::WorkspaceSave => {
                 debug!("application message workspace save");
-                self.app.workspace().save();
+                if let Err(e) = self.app.workspace().save() {
+                    error!("error saving workspace: {:?}", e);
+                }
             }
             ApplicationMessage::WorkspaceOpen(workspace) => {
                 debug!("application message workspace open: {:?}", workspace);
                 if let Ok(_) = workspace.save() {
                     self.app.set_workspace(workspace);
                 }
+            }
+            ApplicationMessage::WorkspaceFolderAdd(node) => {
+                debug!("application message workspace folder add: {:?}", node);
+                debug!("workspace: {:?}", self.app.workspace());
+                debug!("workspace: {:?}", Rc::into_inner(self.app.workspace()));
+                // let mut workspace = Rc::into_inner(self.app.workspace()).unwrap();
+                // workspace.node_push(&node);
+
+                // self.app.workspace_mut().node_push(&node);
             }
         }
     }

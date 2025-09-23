@@ -1,9 +1,13 @@
-use crate::app::Workspace;
+use crate::app::{
+    Workspace,
+    RootNode
+};
 
 #[derive(Debug)]
 pub enum ApplicationMessage {
     Close,
     CloseRequest,
-    WorkspaceOpen(Workspace), /* path  */
+    WorkspaceOpen(Workspace),
     WorkspaceSave,
+    WorkspaceFolderAdd(RootNode)
 }
