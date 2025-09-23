@@ -3,6 +3,8 @@ use log::{
 };
 
 use std::rc::Rc;
+use std::fs;
+use std::error::Error;
 
 use relm4::prelude::*;
 use relm4::actions::*;
@@ -32,14 +34,21 @@ pub fn workspace_open_action(sender: Rc<ComponentSender<MainWindow>>) -> RelmAct
             .set_title("Select a folder")
             .pick_folder() {
                 Some(folder) => {
-                    debug!("Selected folder: {:?}", folder);
+                    debug!("Selected folder: {:?}", folder);        
 
                     let path = folder.to_str().unwrap();
+
+                    if let Ok(contents) = fs::read_to_string(format!("{}/workspace.json", path)) {
+                        if let Ok(worspace) = serde_json::from_str(&contents) {
+                            sender.input(ApplicationMessage::WorkspaceOpen(worspace));
+                            return
+                        }
+                    }
+                    
                     let workspace = Workspace::new(
                         &path,
                         vec![]
                     );
-
                     sender.input(ApplicationMessage::WorkspaceOpen(workspace));
                 },
                 None => {

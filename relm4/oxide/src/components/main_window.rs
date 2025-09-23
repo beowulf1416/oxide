@@ -24,7 +24,10 @@ use relm4_components::save_dialog::{
 };
 
 
-use crate::app::App;
+use crate::app::{
+    App,
+    Workspace
+};
 use crate::application_message::ApplicationMessage;
 
 
@@ -32,8 +35,17 @@ use crate::actions::*;
 
 
 pub struct MainWindow {
+    app: App
 }
 
+
+impl Default for MainWindow {
+    fn default() -> Self {
+        return Self {
+            app: App::new()
+        };
+    }
+}
 
 
 // relm4::new_action_group!(WindowActionGroup, "win");
@@ -54,7 +66,7 @@ impl SimpleComponent for MainWindow {
                 "Open" => ExampleAction,
                 section! {
                     "Open Workspace" => workspace_open::WorkspaceOpenAction,
-                    "Save Workspace" => ExampleAction,
+                    "Save Workspace" => workspace_save::WorkspaceSaveAction,
                 },
                 section! {
                     "Quit" => close_request::CloseRequestAction,
@@ -96,6 +108,12 @@ impl SimpleComponent for MainWindow {
 
                     },
                     pack_start = &gtk::Button {
+                        set_label: "Save Workspace",
+                        set_icon_name: "save",
+                        set_action_name: Some("win.workspace-save")
+
+                    },
+                    pack_start = &gtk::Button {
                         set_label: "Add Folder to Workspace",
                         set_icon_name: "plus-square-outline",
                         set_action_name: Some("win.workspace-folder-add")
@@ -111,8 +129,7 @@ impl SimpleComponent for MainWindow {
         root: Self::Root,
         sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
-        let model = MainWindow {
-        };
+        let model = MainWindow::default();
         let widgets = view_output!();
 
 
@@ -125,6 +142,12 @@ impl SimpleComponent for MainWindow {
 
         let workspace_open_action = crate::actions::workspace_open::workspace_open_action(rc_sender.clone());
         group.add_action(workspace_open_action);
+
+        let workspace_save_action = crate::actions::workspace_save::workspace_save_action(
+            rc_sender.clone(), 
+            Rc::new(model.app.workspace())
+        );
+        group.add_action(workspace_save_action);
 
         group.register_for_widget(&widgets.main_window);
 
@@ -145,9 +168,13 @@ impl SimpleComponent for MainWindow {
             }
             ApplicationMessage::WorkspaceSave => {
                 debug!("application message workspace save");
+                self.app.workspace().save();
             }
-            ApplicationMessage::WorkspaceOpen(path) => {
-                debug!("application message workspace open: {:?}", path);
+            ApplicationMessage::WorkspaceOpen(workspace) => {
+                debug!("application message workspace open: {:?}", workspace);
+                if let Ok(_) = workspace.save() {
+                    self.app.set_workspace(workspace);
+                }
             }
         }
     }

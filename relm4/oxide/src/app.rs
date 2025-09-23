@@ -1,9 +1,11 @@
 use log::{
-    debug
+    debug,
+    error
 };
 use serde::{Deserialize, Serialize};
 
 use std::rc::Rc;
+use std::fs;
 
 
 
@@ -21,6 +23,10 @@ impl App {
 
     pub fn workspace(&self) -> Workspace {
         return self.workspace.clone();
+    }
+
+    pub fn set_workspace(&mut self, workspace: Workspace) {
+        return self.workspace = workspace;
     }
 }
 
@@ -40,12 +46,28 @@ impl Workspace {
         };
     }
 
+    pub fn path(&self) -> Option<String> {
+        return self.path.clone();
+    }
+
     pub fn nodes(&self) -> Vec<RootNode> {
         return self.nodes.clone();
     }
 
     pub fn node_push(&mut self, node: &RootNode) {
         self.nodes.push(node.clone());
+    }
+
+    pub fn save(&self) -> Result<(), &'static str> {
+        if let Ok(content) = serde_json::to_string(&self) {
+            if let Err(e) = fs::write(format!("{}/workspace.json", self.path.clone().unwrap()), content) {
+                error!("error occured while writing workspace file: {:?}", e);
+            }
+            return Ok(());
+        } else {
+            error!("error occured while writing workspace file");
+            return Err("error occured while writing workspace file");
+        }
     }
 }
 
