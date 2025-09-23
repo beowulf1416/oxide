@@ -3,6 +3,7 @@ use log::{
     error
 };
 use std::rc::Rc;
+use std::convert::identity;
 use serde::{Deserialize, Serialize};
 
 use gtk::{
@@ -17,12 +18,12 @@ use relm4::{
     SimpleComponent
 };
 use relm4::actions::*;
-use relm4_components::open_dialog::{
-    OpenDialog, OpenDialogMsg, OpenDialogResponse, OpenDialogSettings,
-};
-use relm4_components::save_dialog::{
-    SaveDialog, SaveDialogMsg, SaveDialogResponse, SaveDialogSettings,
-};
+// use relm4_components::open_dialog::{
+//     OpenDialog, OpenDialogMsg, OpenDialogResponse, OpenDialogSettings,
+// };
+// use relm4_components::save_dialog::{
+//     SaveDialog, SaveDialogMsg, SaveDialogResponse, SaveDialogSettings,
+// };
 
 
 use crate::app::{
@@ -30,23 +31,25 @@ use crate::app::{
     Workspace
 };
 use crate::application_message::ApplicationMessage;
-
-
 use crate::actions::*;
+use crate::components::*;
 
 
 pub struct MainWindow {
-    app: App
+    app: App,
+
+    workspace_view: Controller<workspace::WorkspaceView>,
 }
 
 
-impl Default for MainWindow {
-    fn default() -> Self {
-        return Self {
-            app: App::new()
-        };
-    }
-}
+// impl Default for MainWindow {
+//     fn default() -> Self {
+//         return Self {
+//             app: App::new(),
+//             workspace_view: workspace::WorkspaceView::default()
+//         };
+//     }
+// }
 
 
 // relm4::new_action_group!(WindowActionGroup, "win");
@@ -116,8 +119,7 @@ impl SimpleComponent for MainWindow {
                     pack_start = &gtk::Button {
                         set_label: "Save Workspace",
                         set_icon_name: "save",
-                        set_action_name: Some("win.workspace-save")
-
+                        set_action_name: Some("win.workspace-save"),
                     },
                     pack_start = &gtk::Button {
                         set_label: "Add Folder to Workspace",
@@ -125,6 +127,25 @@ impl SimpleComponent for MainWindow {
                         set_action_name: Some("win.workspace-folder-add")
 
                     },
+                },
+                
+                gtk::Paned {
+                    set_orientation: gtk::Orientation::Horizontal,
+                    set_hexpand: true,
+                    set_vexpand: true,
+
+                    #[wrap(Some)]
+                    set_start_child = &gtk::Box {
+                        set_orientation: gtk::Orientation::Vertical,
+                        set_spacing: 0,
+
+                        append = &model.workspace.widget(),
+                    },
+                    #[wrap(Some)]
+                    set_end_child = &gtk::Box {
+                        set_orientation: gtk::Orientation::Vertical,
+                        set_spacing: 0,
+                    }
                 }
             }
         }
@@ -135,7 +156,13 @@ impl SimpleComponent for MainWindow {
         root: Self::Root,
         sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
-        let model = MainWindow::default();
+        let workspace = workspace::WorkspaceView::builder()
+            .launch(())
+            .forward(sender.input_sender(), identity);
+        let model = MainWindow {
+            app: App::new(),
+            workspace_view: workspace
+        };
         let widgets = view_output!();
 
 
