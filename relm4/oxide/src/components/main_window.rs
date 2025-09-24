@@ -40,6 +40,7 @@ pub struct MainWindow {
 
     header: Controller<header::Header>,
     workspace_view: Controller<views::workspace::WorkspaceView>,
+    data_sources_view: Controller<views::data_sources::DataSourcesView>,
     editor_view: Controller<views::editor::EditorView>
 }
 
@@ -137,12 +138,48 @@ impl SimpleComponent for MainWindow {
                     set_hexpand: true,
                     set_vexpand: true,
 
-                    #[wrap(Some)]
-                    set_start_child = &gtk::Box {
-                        set_orientation: gtk::Orientation::Vertical,
-                        set_spacing: 0,
+                    // #[wrap(Some)]
+                    // set_start_child = &gtk::Box {
+                    //     set_orientation: gtk::Orientation::Vertical,
+                    //     set_spacing: 0,
 
-                        append = model.workspace_view.widget(),
+                    //     append = model.workspace_view.widget(),
+                    // },
+
+                    #[wrap(Some)]
+                    set_start_child = &gtk::Notebook {
+                        set_tab_pos: gtk::PositionType::Left,
+
+                        append_page[Some(&gtk::Button::builder()
+                            .icon_name("plus-square-outline")
+                            .tooltip_text("Workspace")
+                            .build()
+                        )] = &gtk::Box {
+                            set_orientation: gtk::Orientation::Vertical,
+                            set_spacing: 0,
+
+                            gtk::Box {
+                                set_orientation: gtk::Orientation::Vertical,
+                                set_spacing: 0,
+
+                                model.workspace_view.widget(),
+                            },
+                        },
+                        append_page[Some(&gtk::Button::builder()
+                            .icon_name("plus-square-outline")
+                            .tooltip_text("Data Sources")
+                            .build()
+                        )] = &gtk::Box {
+                            set_orientation: gtk::Orientation::Vertical,
+                            set_spacing: 0,
+
+                            gtk::Box {
+                                set_orientation: gtk::Orientation::Vertical,
+                                set_spacing: 0,
+
+                                model.data_sources_view.widget(),
+                            },
+                        },
                     },
 
                     #[wrap(Some)]
@@ -170,6 +207,10 @@ impl SimpleComponent for MainWindow {
             .launch(())
             .forward(sender.input_sender(), identity);
 
+        let data_sources = views::data_sources::DataSourcesView::builder()
+            .launch(())
+            .forward(sender.input_sender(), identity);
+
         let editor = views::editor::EditorView::builder()
             .launch(())
             .forward(sender.input_sender(), identity);
@@ -178,6 +219,7 @@ impl SimpleComponent for MainWindow {
             app: App::new(),
             header: header,
             workspace_view: workspace,
+            data_sources_view: data_sources,
             editor_view: editor
         };
         let widgets = view_output!();
