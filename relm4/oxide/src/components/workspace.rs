@@ -41,8 +41,8 @@ impl Default for WorkspaceView {
 
 #[relm4::component(pub)]
 impl SimpleComponent for WorkspaceView {
-    type Input = ApplicationMessage;
-    type Output = ();
+    type Input = ();
+    type Output = ApplicationMessage;
     type Init = ();
 
     view! {
@@ -62,11 +62,11 @@ impl SimpleComponent for WorkspaceView {
         ComponentParts { model, widgets }
     }
 
-    fn update(&mut self, msg: Self::Input, _sender: ComponentSender<Self>) {
-        // match msg {
-        //     // WorkspaceViewMessage::FolderAdd => {
-        //     //     debug!("//TODO: WorkspaceViewMessage::FolderAdd");
-        //     // }
-        // }
-    }
+    // fn update(&mut self, msg: Self::Input, _sender: ComponentSender<Self>) {
+    //     // match msg {
+    //     //     // WorkspaceViewMessage::FolderAdd => {
+    //     //     //     debug!("//TODO: WorkspaceViewMessage::FolderAdd");
+    //     //     // }
+    //     // }
+    // }
 }

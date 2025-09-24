@@ -38,8 +38,8 @@ use crate::components::*;
 pub struct MainWindow {
     app: App,
 
-    header: Controller<header::Header>
-    // workspace_view: Controller<workspace::WorkspaceView>,
+    header: Controller<header::Header>,
+    workspace_view: Controller<workspace::WorkspaceView>,
 }
 
 
@@ -141,7 +141,7 @@ impl SimpleComponent for MainWindow {
                         set_orientation: gtk::Orientation::Vertical,
                         set_spacing: 0,
 
-                        // append = &model.workspace_view.widget(),
+                        append = model.workspace_view.widget(),
                     },
                     #[wrap(Some)]
                     set_end_child = &gtk::Box {
@@ -161,13 +161,15 @@ impl SimpleComponent for MainWindow {
         let header = header::Header::builder()
             .launch(())
             .forward(sender.input_sender(), identity);
-        // let workspace = workspace::WorkspaceView::builder()
-        //     .launch(())
-        //     .forward(sender.input_sender(), identity);
+
+        let workspace = workspace::WorkspaceView::builder()
+            .launch(())
+            .forward(sender.input_sender(), identity);
+
         let model = MainWindow {
             app: App::new(),
             header: header,
-            // workspace_view: workspace
+            workspace_view: workspace
         };
         let widgets = view_output!();
 
