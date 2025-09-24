@@ -20,14 +20,14 @@ use relm4::{
 use crate::application_message::ApplicationMessage;
 
 
-pub struct EditorView {
+pub struct DataSourcesView {
 
 }
 
 
 
 #[relm4::component(pub)]
-impl SimpleComponent for EditorView {
+impl SimpleComponent for DataSourcesView {
     type Input = ();
     type Output = ApplicationMessage;
     type Init = ();
@@ -38,7 +38,7 @@ impl SimpleComponent for EditorView {
             set_spacing: 0,
 
             gtk::Label {
-                set_label: "Editor",
+                set_label: "Data Sources",
                 set_halign: gtk::Align::Start
             },
         }
@@ -49,7 +49,7 @@ impl SimpleComponent for EditorView {
         root: Self::Root,
         sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
-        let model = EditorView{};
+        let model = DataSourcesView{};
         let widgets = view_output!();
 
         ComponentParts { model, widgets }

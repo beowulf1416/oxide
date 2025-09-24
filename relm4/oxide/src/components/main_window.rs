@@ -39,8 +39,8 @@ pub struct MainWindow {
     app: App,
 
     header: Controller<header::Header>,
-    workspace_view: Controller<workspace::WorkspaceView>,
-    editor_view: Controller<editor::EditorView>
+    workspace_view: Controller<views::workspace::WorkspaceView>,
+    editor_view: Controller<views::editor::EditorView>
 }
 
 
@@ -144,6 +144,7 @@ impl SimpleComponent for MainWindow {
 
                         append = model.workspace_view.widget(),
                     },
+
                     #[wrap(Some)]
                     set_end_child = &gtk::Box {
                         set_orientation: gtk::Orientation::Vertical,
@@ -165,11 +166,11 @@ impl SimpleComponent for MainWindow {
             .launch(())
             .forward(sender.input_sender(), identity);
 
-        let workspace = workspace::WorkspaceView::builder()
+        let workspace = views::workspace::WorkspaceView::builder()
             .launch(())
             .forward(sender.input_sender(), identity);
 
-        let editor = editor::EditorView::builder()
+        let editor = views::editor::EditorView::builder()
             .launch(())
             .forward(sender.input_sender(), identity);
 
