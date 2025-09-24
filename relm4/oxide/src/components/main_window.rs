@@ -40,6 +40,7 @@ pub struct MainWindow {
 
     header: Controller<header::Header>,
     workspace_view: Controller<workspace::WorkspaceView>,
+    editor_view: Controller<editor::EditorView>
 }
 
 
@@ -147,6 +148,8 @@ impl SimpleComponent for MainWindow {
                     set_end_child = &gtk::Box {
                         set_orientation: gtk::Orientation::Vertical,
                         set_spacing: 0,
+
+                        append = model.editor_view.widget(),
                     }
                 }
             }
@@ -166,10 +169,15 @@ impl SimpleComponent for MainWindow {
             .launch(())
             .forward(sender.input_sender(), identity);
 
+        let editor = editor::EditorView::builder()
+            .launch(())
+            .forward(sender.input_sender(), identity);
+
         let model = MainWindow {
             app: App::new(),
             header: header,
-            workspace_view: workspace
+            workspace_view: workspace,
+            editor_view: editor
         };
         let widgets = view_output!();
 

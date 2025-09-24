@@ -46,8 +46,26 @@ impl SimpleComponent for WorkspaceView {
     type Init = ();
 
     view! {
-        gtk::Label {
-            set_label: "workspace"
+        gtk::Box {
+            set_orientation: gtk::Orientation::Vertical,
+            set_spacing: 0,
+
+            gtk::Label {
+                set_label: "Workspace",
+                set_halign: gtk::Align::Start
+            },
+
+            gtk::ActionBar {
+                set_hexpand: true,
+                set_valign: gtk::Align::End,
+
+                pack_start = &gtk::Button {
+                    set_label: "Open Workspace",
+                    set_icon_name: "document-open",
+                    set_action_name: Some("win.workspace-open")
+
+                },
+            }
         }
     }
 
