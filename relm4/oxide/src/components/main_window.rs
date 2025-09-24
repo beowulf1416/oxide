@@ -38,7 +38,8 @@ use crate::components::*;
 pub struct MainWindow {
     app: App,
 
-    workspace_view: Controller<workspace::WorkspaceView>,
+    header: Controller<header::Header>
+    // workspace_view: Controller<workspace::WorkspaceView>,
 }
 
 
@@ -92,6 +93,7 @@ impl SimpleComponent for MainWindow {
         main_window = gtk::ApplicationWindow {
             set_title: Some("Oxide"),
             set_default_size: (800, 600),
+            set_titlebar: Some(model.header.widget()),
             // set_child: Some(&self.widgets.main_box),
 
             gtk::Box {
@@ -139,7 +141,7 @@ impl SimpleComponent for MainWindow {
                         set_orientation: gtk::Orientation::Vertical,
                         set_spacing: 0,
 
-                        append = &model.workspace.widget(),
+                        // append = &model.workspace_view.widget(),
                     },
                     #[wrap(Some)]
                     set_end_child = &gtk::Box {
@@ -156,12 +158,16 @@ impl SimpleComponent for MainWindow {
         root: Self::Root,
         sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
-        let workspace = workspace::WorkspaceView::builder()
+        let header = header::Header::builder()
             .launch(())
             .forward(sender.input_sender(), identity);
+        // let workspace = workspace::WorkspaceView::builder()
+        //     .launch(())
+        //     .forward(sender.input_sender(), identity);
         let model = MainWindow {
             app: App::new(),
-            workspace_view: workspace
+            header: header,
+            // workspace_view: workspace
         };
         let widgets = view_output!();
 
