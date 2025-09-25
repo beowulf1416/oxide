@@ -69,7 +69,10 @@ impl SimpleComponent for MainWindow {
     menu! {
         main_menu: {
             "File" {
-                "New" => ExampleAction,
+                "New" {
+                    "Text File" => new_text_file_action::NewTextFileAction,
+                    "SQL" => ExampleAction
+                },
                 "Open" => ExampleAction,
                 section! {
                     "Workspace" {
@@ -85,7 +88,7 @@ impl SimpleComponent for MainWindow {
                 }
             },
             "Help" {
-                "About" => ExampleAction,
+                "About" => about_action::AboutAction,
             }
         }
     }
@@ -151,7 +154,7 @@ impl SimpleComponent for MainWindow {
                         set_tab_pos: gtk::PositionType::Left,
 
                         append_page[Some(&gtk::Button::builder()
-                            .icon_name("plus-square-outline")
+                            .icon_name("folder-visiting")
                             .tooltip_text("Workspace")
                             .build()
                         )] = &gtk::Box {
@@ -166,7 +169,7 @@ impl SimpleComponent for MainWindow {
                             },
                         },
                         append_page[Some(&gtk::Button::builder()
-                            .icon_name("plus-square-outline")
+                            .icon_name("file-manager")
                             .tooltip_text("Data Sources")
                             .build()
                         )] = &gtk::Box {

@@ -41,6 +41,18 @@ impl SimpleComponent for DataSourcesView {
                 set_label: "Data Sources",
                 set_halign: gtk::Align::Start
             },
+
+            gtk::ActionBar {
+                set_hexpand: true,
+                set_valign: gtk::Align::End,
+
+                pack_start = &gtk::Button {
+                    set_label: "Add Datasource",
+                    set_icon_name: "file-cabinet",
+                    set_action_name: Some("win.data-source-add")
+                },
+
+            }
         }
     }
 
