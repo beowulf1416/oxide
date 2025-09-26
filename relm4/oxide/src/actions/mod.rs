@@ -8,6 +8,8 @@ pub mod workspace_folder_add;
 
 
 pub mod new_text_file_action;
+pub mod new_sql_file_action;
+pub mod new_python_file_action;
 
 
 

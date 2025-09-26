@@ -20,28 +20,31 @@ use relm4::{
 use crate::application_message::ApplicationMessage;
 
 
-pub struct WorkspaceView {
+#[derive(Debug)]
+pub enum WorkspaceActions {
+    Open,
+    Save,
+    FolderAdd
+}
 
+
+pub struct WorkspaceView {
+    path: String
 }
 
 
 impl Default for WorkspaceView {
     fn default() -> Self {
         return Self {
+            path: String::from("")
         };
     }
 }
 
 
-// #[derive(Debug)]
-// pub enum WorkspaceViewMessage {
-//     FolderAdd
-// }
-
-
 #[relm4::component(pub)]
 impl SimpleComponent for WorkspaceView {
-    type Input = ();
+    type Input = WorkspaceActions;
     type Output = ApplicationMessage;
     type Init = ();
 
@@ -65,6 +68,16 @@ impl SimpleComponent for WorkspaceView {
                     set_action_name: Some("win.workspace-open")
 
                 },
+            },
+
+            gtk::ScrolledWindow {
+                set_hexpand: true,
+                set_vexpand: true,
+
+                gtk::ColumnView {
+                    set_hexpand: true,
+                    set_vexpand: true,
+                }
             }
         }
     }
@@ -74,17 +87,25 @@ impl SimpleComponent for WorkspaceView {
         root: Self::Root,
         sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
-        let model = WorkspaceView{};
+        let model = WorkspaceView {
+            path: String::from("")
+        };
         let widgets = view_output!();
 
         ComponentParts { model, widgets }
     }
 
-    // fn update(&mut self, msg: Self::Input, _sender: ComponentSender<Self>) {
-    //     // match msg {
-    //     //     // WorkspaceViewMessage::FolderAdd => {
-    //     //     //     debug!("//TODO: WorkspaceViewMessage::FolderAdd");
-    //     //     // }
-    //     // }
-    // }
+    fn update(&mut self, msg: Self::Input, _sender: ComponentSender<Self>) {
+        match msg {
+            WorkspaceActions::Open => {
+                debug!("WorkspaceActions::Open update");
+            }
+            WorkspaceActions::Save => {
+                debug!("WorkspaceActions::Save update");
+            }
+            WorkspaceActions::FolderAdd => {
+                debug!("WorkspaceActions::FolderAdd update");
+            }
+        }
+    }
 }

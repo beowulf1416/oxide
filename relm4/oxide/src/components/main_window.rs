@@ -71,7 +71,8 @@ impl SimpleComponent for MainWindow {
             "File" {
                 "New" {
                     "Text File" => new_text_file_action::NewTextFileAction,
-                    "SQL" => ExampleAction
+                    "SQL File" => new_sql_file_action::NewSQLFileAction,
+                    "Python File" => new_python_file_action::NewPythonFileAction
                 },
                 "Open" => ExampleAction,
                 section! {
@@ -90,8 +91,14 @@ impl SimpleComponent for MainWindow {
             "Help" {
                 "About" => about_action::AboutAction,
             }
+        },
+        new_files_menu: {
+            "Text File" => new_text_file_action::NewTextFileAction,
+            "SQL File" => new_sql_file_action::NewSQLFileAction,
+            "Python File" => new_python_file_action::NewPythonFileAction
         }
     }
+    
 
     view! {
         #[root]
@@ -117,11 +124,10 @@ impl SimpleComponent for MainWindow {
                     set_hexpand: true,
                     set_valign: gtk::Align::End,
 
-                    pack_start = &gtk::Button {
-                        set_label: "Open Workspace",
-                        set_icon_name: "document-open",
-                        set_action_name: Some("win.workspace-open")
-
+                    pack_start = &gtk::MenuButton {
+                        set_label: "New",
+                        set_icon_name: "document-new",
+                        set_menu_model: Some(&new_files_menu)
                     },
                     pack_start = &gtk::Button {
                         set_label: "Save Workspace",
@@ -132,7 +138,6 @@ impl SimpleComponent for MainWindow {
                         set_label: "Add Folder to Workspace",
                         set_icon_name: "plus-square-outline",
                         set_action_name: Some("win.workspace-folder-add")
-
                     },
                 },
                 
@@ -140,14 +145,6 @@ impl SimpleComponent for MainWindow {
                     set_orientation: gtk::Orientation::Horizontal,
                     set_hexpand: true,
                     set_vexpand: true,
-
-                    // #[wrap(Some)]
-                    // set_start_child = &gtk::Box {
-                    //     set_orientation: gtk::Orientation::Vertical,
-                    //     set_spacing: 0,
-
-                    //     append = model.workspace_view.widget(),
-                    // },
 
                     #[wrap(Some)]
                     set_start_child = &gtk::Notebook {

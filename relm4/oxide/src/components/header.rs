@@ -28,11 +28,6 @@ impl SimpleComponent for Header {
 
     view! {
         gtk::HeaderBar {
-            // #[wrap(Some)]
-            // set_title_widget = &gtk::Button {
-            //     set_label: "Oxide",
-            // }
-
             pack_end = &gtk::MenuButton {
                 set_icon_name: "settings",
                 set_menu_model: Some(&settings)
