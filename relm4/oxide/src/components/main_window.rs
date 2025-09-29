@@ -273,9 +273,9 @@ impl SimpleComponent for MainWindow {
             ApplicationMessage::WorkspaceOpen(workspace) => {
                 debug!("application message workspace open: {:?}", workspace);
                 let _ = self.workspace_view.sender().send(crate::components::views::workspace::WorkspaceActions::Open);
-                if let Ok(_) = workspace.save() {
-                    self.app.set_workspace(workspace);
-                }
+                // if let Ok(_) = workspace.save() {
+                //     self.app.set_workspace(workspace);
+                // }
             }
             ApplicationMessage::WorkspaceFolderAdd(node) => {
                 debug!("application message workspace folder add: {:?}", node);

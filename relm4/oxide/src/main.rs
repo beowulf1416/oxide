@@ -1,3 +1,4 @@
+mod structs;
 mod components;
 mod actions;
 mod app;

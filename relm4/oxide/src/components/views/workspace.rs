@@ -18,25 +18,29 @@ use relm4::{
 };
 
 use crate::application_message::ApplicationMessage;
+use crate::structs::{
+    workspace::Workspace,
+    node::Node
+};
 
 
 #[derive(Debug)]
 pub enum WorkspaceActions {
-    Open,
+    Open(Workspace),
     Save,
     FolderAdd
 }
 
 
 pub struct WorkspaceView {
-    path: String
+    workspace: Workspace
 }
 
 
 impl Default for WorkspaceView {
     fn default() -> Self {
         return Self {
-            path: String::from("")
+            workspace: Workspace::default()
         };
     }
 }
@@ -66,7 +70,6 @@ impl SimpleComponent for WorkspaceView {
                     set_label: "Open Workspace",
                     set_icon_name: "document-open",
                     set_action_name: Some("win.workspace-open")
-
                 },
             },
 
@@ -88,7 +91,7 @@ impl SimpleComponent for WorkspaceView {
         sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
         let model = WorkspaceView {
-            path: String::from("")
+            workspace: Workspace::default()
         };
         let widgets = view_output!();
 
