@@ -7,7 +7,12 @@ use serde::{Deserialize, Serialize};
 
 use gtk::{
     prelude::*,
-    gio
+    gio,
+    glib::{
+        self,
+        clone,
+        BoxedAnyObject
+    }
 };
 
 use relm4::{
@@ -51,7 +56,16 @@ impl SimpleComponent for DataSourcesView {
                     set_icon_name: "file-cabinet",
                     set_action_name: Some("win.data-source-add")
                 },
+            },
 
+            gtk::ScrolledWindow {
+                set_vexpand: true,
+                set_hexpand: true,
+
+                #[name(tv)]
+                gtk::ColumnView {
+
+                }
             }
         }
     }
@@ -65,5 +79,11 @@ impl SimpleComponent for DataSourcesView {
         let widgets = view_output!();
 
         ComponentParts { model, widgets }
+    }
+
+    fn pre_view() {
+        let tv = &widgets.tv;
+
+        let tcv = crate::components::views::tree_column_view::TreeColumnView::new(tv);
     }
 }

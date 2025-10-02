@@ -169,6 +169,11 @@ impl SimpleComponent for WorkspaceView {
         ComponentParts { model, widgets }
     }
 
+    // fn pre_view() {
+    //     let cv = &widgets.tree_view;
+    //     let tcv = super::tree_column_view::TreeColumnView::new(&cv);
+    // }
+
     fn update(&mut self, msg: Self::Input, _sender: ComponentSender<Self>) {
         match msg {
             WorkspaceActions::Open(ws)=> {
