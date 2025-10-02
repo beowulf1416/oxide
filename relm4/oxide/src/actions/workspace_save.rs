@@ -20,7 +20,7 @@ use crate::application_message::ApplicationMessage;
 relm4::new_stateless_action!(pub WorkspaceSaveAction, WindowActionGroup, "workspace-save");
 
 
-pub fn workspace_save_action(sender: Rc<ComponentSender<MainWindow>>, workspace: Rc<Workspace>) -> RelmAction<WorkspaceSaveAction> {
+pub fn workspace_save_action(_sender: Rc<ComponentSender<MainWindow>>, workspace: Rc<Workspace>) -> RelmAction<WorkspaceSaveAction> {
     return RelmAction::new_stateless(move |_| {
         debug!("WorkspaceSaveAction action triggered");
         if let Err(e) = workspace.save() {

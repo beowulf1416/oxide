@@ -16,7 +16,11 @@ use rfd::FileDialog;
 
 use walkdir::WalkDir;
 
-use crate::app::Workspace;
+// use crate::app::Workspace;
+use crate::structs::{
+    workspace::Workspace,
+    node::Node
+};
 use crate::actions::WindowActionGroup;
 use crate::components::main_window::MainWindow;
 use crate::application_message::ApplicationMessage;
@@ -36,20 +40,42 @@ pub fn workspace_open_action(sender: Rc<ComponentSender<MainWindow>>) -> RelmAct
                 Some(folder) => {
                     debug!("Selected folder: {:?}", folder);        
 
-                    let path = folder.to_str().unwrap();
+                    let root_path = folder.as_path();
+                    // let root_path_buf = path.into_path();
 
-                    if let Ok(contents) = fs::read_to_string(format!("{}/workspace.json", path)) {
-                        if let Ok(worspace) = serde_json::from_str(&contents) {
-                            sender.input(ApplicationMessage::WorkspaceOpen(worspace));
-                            return
-                        }
-                    }
-                    
-                    let workspace = Workspace::new(
-                        &path,
-                        vec![]
+                    let name = root_path.file_name().unwrap().to_str().unwrap();
+                    let parent = root_path.parent().unwrap().to_str().unwrap();
+
+                    let mut ws = Workspace::new(
+                        name,
+                        parent
                     );
-                    sender.input(ApplicationMessage::WorkspaceOpen(workspace));
+                    // sender.input(ApplicationMessage::WorkspaceOpen(ws));
+
+
+                    // let mut root = Node::new(
+                    //     name,
+                    //     parent
+                    // );
+
+                    for result in walkdir::WalkDir::new(root_path).min_depth(1).max_depth(1) {
+                        // debug!("entry: {:?}", result);
+
+                        let entry = result.unwrap();
+                        let entry_path = entry.path();
+
+                        
+                        let name = entry.file_name().to_str().unwrap();
+                        let node = Node::new(
+                            name,
+                            root_path.to_str().unwrap()
+                        );
+
+                        // root.child_add(node);
+                        ws.child_add(&node);
+                    }
+
+                    sender.input(ApplicationMessage::WorkspaceOpen(ws));
                 },
                 None => {
                     debug!("No folder selected");

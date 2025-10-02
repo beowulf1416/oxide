@@ -20,7 +20,7 @@ use crate::application_message::ApplicationMessage;
 relm4::new_stateless_action!(pub NewTextFileAction, WindowActionGroup, "new-text-file");
 
 
-pub fn new_text_file_action(sender: Rc<ComponentSender<MainWindow>>) -> RelmAction<NewTextFileAction> {
+pub fn new_text_file_action(_sender: Rc<ComponentSender<MainWindow>>) -> RelmAction<NewTextFileAction> {
     return RelmAction::new_stateless(move |_| {
         debug!("NewTextFileAction action triggered");
     });

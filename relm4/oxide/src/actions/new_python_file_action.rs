@@ -20,7 +20,7 @@ use crate::application_message::ApplicationMessage;
 relm4::new_stateless_action!(pub NewPythonFileAction, WindowActionGroup, "new-python-file");
 
 
-pub fn new_python_file_action(sender: Rc<ComponentSender<MainWindow>>) -> RelmAction<NewPythonFileAction> {
+pub fn new_python_file_action(_sender: Rc<ComponentSender<MainWindow>>) -> RelmAction<NewPythonFileAction> {
     return RelmAction::new_stateless(move |_| {
         debug!("NewPythonFileAction action triggered");
     });
