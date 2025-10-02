@@ -71,8 +71,8 @@ impl SimpleComponent for EditorView {
 
     fn init(
         _init: Self::Init,
-        root: Self::Root,
-        sender: ComponentSender<Self>,
+        _root: Self::Root,
+        _sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
         let model = EditorView{};
         let widgets = view_output!();

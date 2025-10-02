@@ -20,7 +20,7 @@ use crate::application_message::ApplicationMessage;
 relm4::new_stateless_action!(pub AboutAction, WindowActionGroup, "about");
 
 
-pub fn new_text_file_action(sender: Rc<ComponentSender<MainWindow>>) -> RelmAction<AboutAction> {
+pub fn about_action(_sender: Rc<ComponentSender<MainWindow>>) -> RelmAction<AboutAction> {
     return RelmAction::new_stateless(move |_| {
         debug!("AboutAction action triggered");
     });

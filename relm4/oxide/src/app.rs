@@ -54,13 +54,13 @@ impl Workspace {
         return self.path.clone();
     }
 
-    pub fn nodes(&self) -> Vec<RootNode> {
-        return self.nodes.clone();
-    }
+    // pub fn nodes(&self) -> Vec<RootNode> {
+    //     return self.nodes.clone();
+    // }
 
-    pub fn node_push(&mut self, node: &RootNode) {
-        self.nodes.push(node.clone());
-    }
+    // pub fn node_push(&mut self, node: &RootNode) {
+    //     self.nodes.push(node.clone());
+    // }
 
     pub fn save(&self) -> Result<(), &'static str> {
         debug!("workspace_save: {:?}", self);
@@ -130,6 +130,7 @@ impl Default for Node {
         };
     }
 }
+
 
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

@@ -24,6 +24,34 @@ pub struct Node {
 }
 
 
+
+impl Node {
+    pub fn new(
+        name: &str,
+        path: &str
+    ) -> Self {
+        return Self {
+            name: String::from(name),
+            path: String::from(path),
+            parent: None,
+            children: vec!()
+        };
+    }
+
+    pub fn name(&self) -> String {
+        return self.name.clone();
+    }
+
+    pub fn path(&self) -> String {
+        return self.path.clone();
+    }
+
+    pub fn child_add(&mut self, node: Node) {
+        self.children.push(node);
+    }
+}
+
+
 impl Default for Node {
     fn default() -> Node {
         return Node {

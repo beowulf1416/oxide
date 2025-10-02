@@ -26,17 +26,17 @@ use relm4::actions::*;
 // };
 
 
-use crate::app::{
-    App,
-    Workspace
-};
+// use crate::app::{
+//     App,
+//     Workspace
+// };
 use crate::application_message::ApplicationMessage;
 use crate::actions::*;
 use crate::components::*;
 
 
 pub struct MainWindow {
-    app: App,
+    // app: App,
 
     header: Controller<header::Header>,
     workspace_view: Controller<views::workspace::WorkspaceView>,
@@ -216,7 +216,7 @@ impl SimpleComponent for MainWindow {
             .forward(sender.input_sender(), identity);
 
         let model = MainWindow {
-            app: App::new(),
+            // app: App::new(),
             header: header,
             workspace_view: workspace,
             data_sources_view: data_sources,
@@ -236,11 +236,11 @@ impl SimpleComponent for MainWindow {
         let workspace_open_action = crate::actions::workspace_open::workspace_open_action(rc_sender.clone());
         group.add_action(workspace_open_action);
 
-        let workspace_save_action = crate::actions::workspace_save::workspace_save_action(
-            rc_sender.clone(), 
-            model.app.workspace().clone()
-        );
-        group.add_action(workspace_save_action);
+        // let workspace_save_action = crate::actions::workspace_save::workspace_save_action(
+        //     rc_sender.clone(), 
+        //     model.app.workspace().clone()
+        // );
+        // group.add_action(workspace_save_action);
 
         let workspace_folder_add_action = crate::actions::workspace_folder_add::workspace_folder_add_action(
             rc_sender.clone()
@@ -266,21 +266,21 @@ impl SimpleComponent for MainWindow {
             }
             ApplicationMessage::WorkspaceSave => {
                 debug!("application message workspace save");
-                if let Err(e) = self.app.workspace().save() {
-                    error!("error saving workspace: {:?}", e);
-                }
+                // if let Err(e) = self.app.workspace().save() {
+                //     error!("error saving workspace: {:?}", e);
+                // }
             }
             ApplicationMessage::WorkspaceOpen(workspace) => {
-                debug!("application message workspace open: {:?}", workspace);
-                let _ = self.workspace_view.sender().send(crate::components::views::workspace::WorkspaceActions::Open);
+                // debug!("application message workspace open: {:?}", workspace);
+                let _ = self.workspace_view.sender().send(crate::components::views::workspace::WorkspaceActions::Open(workspace));
                 // if let Ok(_) = workspace.save() {
                 //     self.app.set_workspace(workspace);
                 // }
             }
             ApplicationMessage::WorkspaceFolderAdd(node) => {
                 debug!("application message workspace folder add: {:?}", node);
-                debug!("workspace: {:?}", self.app.workspace());
-                debug!("workspace: {:?}", Rc::into_inner(self.app.workspace()));
+                // debug!("workspace: {:?}", self.app.workspace());
+                // debug!("workspace: {:?}", Rc::into_inner(self.app.workspace()));
                 // let mut workspace = Rc::into_inner(self.app.workspace()).unwrap();
                 // workspace.node_push(&node);
 

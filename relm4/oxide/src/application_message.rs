@@ -1,7 +1,8 @@
 use crate::app::{
-    Workspace,
+    // Workspace,
     RootNode
 };
+use crate::structs::workspace::Workspace;
 
 #[derive(Debug)]
 pub enum ApplicationMessage {

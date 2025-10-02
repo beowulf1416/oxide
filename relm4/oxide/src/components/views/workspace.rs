@@ -14,7 +14,11 @@ use relm4::{
     prelude::*,
     ComponentParts,
     ComponentSender,
-    SimpleComponent
+    SimpleComponent,
+    typed_view::column::{
+        LabelColumn,
+        TypedColumnView
+    }
 };
 
 use crate::application_message::ApplicationMessage;
@@ -32,18 +36,75 @@ pub enum WorkspaceActions {
 }
 
 
-pub struct WorkspaceView {
-    workspace: Workspace
+#[derive(Debug, PartialEq, Eq)]
+struct TreeItem {
+    name: String,
+    value: String
 }
 
 
-impl Default for WorkspaceView {
-    fn default() -> Self {
+impl TreeItem {
+    pub fn new(
+        name: &str,
+        value: &str
+    ) -> Self {
         return Self {
-            workspace: Workspace::default()
+            name: String::from(name),
+            value: String::from(value)
         };
     }
 }
+
+
+
+struct NameColumn {
+
+}
+
+impl LabelColumn for NameColumn {
+    type Item = TreeItem;
+    type Value = String;
+
+    const COLUMN_NAME: &'static str = "Name";
+
+    const ENABLE_SORT: bool = true;
+    const ENABLE_RESIZE: bool = true;
+
+    fn get_cell_value(item: &Self::Item) -> Self::Value {
+        debug!("get_cell_value: {:?}", item);
+        return item.name.clone();
+    }
+
+    fn format_cell_value(value: &Self::Value) -> String {
+        debug!("format_cell_value: {:?}", value);
+        return value.clone();
+    }
+}
+
+
+pub struct WorkspaceView {
+    workspace: Workspace,
+
+    view_wrapper: TypedColumnView<TreeItem, gtk::SingleSelection>
+}
+
+
+impl WorkspaceView {
+    pub fn update(&mut self, ws: Workspace) {
+        self.workspace = ws;
+    }
+}
+
+
+
+// impl Default for WorkspaceView {
+//     fn default() -> Self {
+//         return Self {
+//             workspace: Workspace::default(),
+//             view_wrapper
+//         };
+//     }
+// }
 
 
 #[relm4::component(pub)]
@@ -77,9 +138,8 @@ impl SimpleComponent for WorkspaceView {
                 set_hexpand: true,
                 set_vexpand: true,
 
-                gtk::ColumnView {
-                    set_hexpand: true,
-                    set_vexpand: true,
+                #[local_ref]
+                tree_view -> gtk::ColumnView {
                 }
             }
         }
@@ -87,21 +147,42 @@ impl SimpleComponent for WorkspaceView {
 
     fn init(
         _init: Self::Init,
-        root: Self::Root,
-        sender: ComponentSender<Self>,
+        _root: Self::Root,
+        _sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
+        let mut view_wrapper = TypedColumnView::<TreeItem, gtk::SingleSelection>::new();
+        view_wrapper.append_column::<NameColumn>();
+
         let model = WorkspaceView {
-            workspace: Workspace::default()
+            workspace: Workspace::default(),
+            view_wrapper: view_wrapper
         };
+
+        // debug!("{:?}", &model.view_wrapper.view);
+        let tree_view = &model.view_wrapper.view;
+
         let widgets = view_output!();
+
+        // debug!("cv: {:?}", widgets.tree_view);
+
 
         ComponentParts { model, widgets }
     }
 
     fn update(&mut self, msg: Self::Input, _sender: ComponentSender<Self>) {
         match msg {
-            WorkspaceActions::Open => {
-                debug!("WorkspaceActions::Open update");
+            WorkspaceActions::Open(ws)=> {
+                debug!("WorkspaceActions::Open update: {:?}", ws);
+                // self.workspace = ws;
+
+                self.view_wrapper.clear();
+                for n in ws.children() {
+                    debug!("node: {:?}", n);
+                    self.view_wrapper.append(TreeItem::new(
+                        n.name().as_str(),
+                        n.path().as_str()
+                    ));
+                }
             }
             WorkspaceActions::Save => {
                 debug!("WorkspaceActions::Save update");

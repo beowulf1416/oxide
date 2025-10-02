@@ -58,8 +58,8 @@ impl SimpleComponent for DataSourcesView {
 
     fn init(
         _init: Self::Init,
-        root: Self::Root,
-        sender: ComponentSender<Self>,
+        _root: Self::Root,
+        _sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
         let model = DataSourcesView{};
         let widgets = view_output!();

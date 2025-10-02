@@ -38,7 +38,7 @@ pub fn workspace_open_action(sender: Rc<ComponentSender<MainWindow>>) -> RelmAct
             .set_title("Select a folder")
             .pick_folder() {
                 Some(folder) => {
-                    debug!("Selected folder: {:?}", folder);        
+                    // debug!("Selected folder: {:?}", folder);        
 
                     let root_path = folder.as_path();
                     // let root_path_buf = path.into_path();
@@ -50,20 +50,12 @@ pub fn workspace_open_action(sender: Rc<ComponentSender<MainWindow>>) -> RelmAct
                         name,
                         parent
                     );
-                    // sender.input(ApplicationMessage::WorkspaceOpen(ws));
-
-
-                    // let mut root = Node::new(
-                    //     name,
-                    //     parent
-                    // );
 
                     for result in walkdir::WalkDir::new(root_path).min_depth(1).max_depth(1) {
                         // debug!("entry: {:?}", result);
 
                         let entry = result.unwrap();
-                        let entry_path = entry.path();
-
+                        // let entry_path = entry.path();
                         
                         let name = entry.file_name().to_str().unwrap();
                         let node = Node::new(
